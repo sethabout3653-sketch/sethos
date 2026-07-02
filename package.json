@@ -1,15 +1,13 @@
 {
-  "name": "scramjet-libcurl-proxy",
+  "name": "custom-school-proxy",
   "version": "1.0.0",
-  "description": "A flat-file personal proxy using Scramjet and Libcurl",
+  "type": "module",
   "main": "server.js",
   "scripts": {
-    "postinstall": "node server.js",
-    "start": "node server.js",
-    "test": "node test-client.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "scramjet": "^4.36.0",
-    "node-libcurl": "^3.0.0"
+    "@titaniumnetwork-dev/ultraviolet": "^3.2.7",
+    "express": "^4.19.2"
   }
 }
