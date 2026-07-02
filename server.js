@@ -1,41 +1,22 @@
-const http = require('http');
-const { spawn } = require('child_process');
-const fs = require('fs');
-const config = require('./config');
-const { handleProxy } = require('./proxy-stream');
+import express from 'express';
+import { createServer } from 'node:http';
+import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
+import { join } from 'node:path';
 
-// Automatically daemonize (run in background) if not already detached
-if (!process.env.__BACKGROUND__) {
-  process.env.__BACKGROUND__ = 'true';
-  
-  const out = fs.openSync('./proxy.log', 'a');
-  const err = fs.openSync('./proxy.log', 'a');
+const app = express();
 
-  const child = spawn(process.argv[0], process.argv.slice(1), {
-    detached: true,
-    stdio: ['ignore', out, err],
-    env: process.env
-  });
+// 1. Serve your custom interface files out of the public directory
+app.use(express.static('public'));
 
-  child.unref();
-  console.log(`Proxy automated. Running in background. PID: ${child.pid}`);
-  process.exit(0);
-}
+// 2. Automatically route & serve core Ultraviolet library distribution scripts straight from node_modules
+app.use('/uv/', express.static(uvPath));
 
-// Main Server Logic (Runs silently in the background)
-const server = http.createServer((req, res) => {
-  const proxyAuth = req.headers['x-proxy-auth'];
-  if (config.secretToken && proxyAuth !== config.secretToken) {
-    res.writeHead(407, { 'Content-Type': 'text/plain' });
-    return res.end('Proxy Authentication Required.');
-  }
+const port = process.env.PORT || 8080;
+const server = createServer(app);
 
-  handleProxy(req, res);
+// Simple online status checkpoint
+app.get('/health', (req, res) => res.send('Proxy is online.'));
+
+server.listen(port, () => {
+  console.log(`Proxy server actively running on port ${port}`);
 });
-
-// Auto-restart crash protection
-process.on('uncaughtException', (err) => {
-  fs.appendFileSync('./proxy.log', `[Crash Protected] ${new Date().toISOString()} - ${err.stack}\n`);
-});
-
-server.listen(config.port);
