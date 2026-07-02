@@ -1,0 +1,15 @@
+{
+  "name": "scramjet-libcurl-proxy",
+  "version": "1.0.0",
+  "description": "A flat-file personal proxy using Scramjet and Libcurl",
+  "main": "server.js",
+  "scripts": {
+    "postinstall": "node server.js",
+    "start": "node server.js",
+    "test": "node test-client.js"
+  },
+  "dependencies": {
+    "scramjet": "^4.36.0",
+    "node-libcurl": "^3.0.0"
+  }
+}
