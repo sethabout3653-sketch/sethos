@@ -1,0 +1,16 @@
+{
+  "name": "sethos-proxy",
+  "version": "0.1.0",
+  "description": "Reverse proxy using scramjet + node-libcurl for sethos",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "scramjet": "^2.9.0",
+    "node-libcurl": "^3.2.0"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
